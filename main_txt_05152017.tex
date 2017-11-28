@@ -1,0 +1,73 @@
+
+\documentclass[12pt ]{iopart}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage[autostyle,italian=guillemets]{csquotes}%bibliografia
+%%\usepackage[bibstyle=authoryear,citestyle=authoryear-comp,backend=biber,uniquelist=false]{biblatex}%stile bibliografia
+\usepackage[style=authoryear-icomp,maxbibnames=9,maxcitenames=1,uniquelist=false,
+    backend=biber]{biblatex}
+
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+\addbibresource{b.bib}
+%\newcommand{\gguide}{{\it Preparing graphics for IOP Publishing journals}}
+%Uncomment next line if AMS fonts required
+%\usepackage{iopams}  
+\begin{document}
+
+\title[CNN EEG fNIRS]{CNN EEG fNIRS}
+
+\author{Pierpaolo Croce\textsuperscript{1,2}, Filippo Zappasodi\textsuperscript{1,2}, Arcangelo Merla\textsuperscript{1,2} \& Antonio Maria Chiarelli\textsuperscript{3}}
+
+\ead{pierpaolo.croce@unich.it}
+\vspace{10pt}
+\begin{indented}
+\item[] \textsuperscript{1} Department of Neuroscience, Imaging and Clinical Sciences, "G.d’Annunzio" University, Chieti, Italy
+\item[] \textsuperscript{2} Institute of Advanced Biomedical Technologies, "G.d’Annunzio" University, Chieti, Italy
+\item[] \textsuperscript{3} University of Illinois, Beckman Institute, 405 North Mathews Avenue, Urbana, Illinois 61801, United States
+\end{indented}
+
+\begin{abstract}
+	\\
+	\textit{Objective.} to be filled. \\
+	\textit{Approach.} to be filled.\\
+	\textit{Main Results.} to be filled. \\
+	\textit{Significance.} to be filled.
+\end{abstract}
+
+
+\section{Introduction}
+
+Electroencefalography (EEG) and functional Near-Infrared Spectroscopy (fNIRS) are non-invasive, portable, lightweight and reasonably cheap brain imaging techniques that have been recently used to build multimodal Brain Computer Interface (BCI) systems. Indeed, EEG and fNIRS present complementary features. EEG provides an high temporal resolution (around 1 ms) despite poor spatial resolution (few cm). fNIRS yields low temporal resolution but, because of the fast exponential decay of light sensitivity, it provides good spatial resolution (around 1 cm) \parencite{chiarelli2016combining}. 
+
+BCI looks at build a framework to bypass the peripheral nervous system linking central nervous system to a computer or a device, directly. The BCI analysis process can be split into two steps: features extraction and classification. The first step involve the extraction of features of interest from measured signals. EEG features can be extracted according to the frequencies properties of the signal. Indeed, well-distict frequency range have been identified in the EEG literature: delta ($< 4 Hz$), theta ($4-7 Hz$), alpha ($8-15 Hz$), beta ($16-31 Hz$), and gamma ($> 31 Hz$) [citazione]. Against, fNIRS allows to extract features related to the hemodynamic response (mainly oxygenated, HbO and de-oxygenated, dHbO mean hemoglobin variation)[citazione]. The challenge in the classification step is to reach an appropriate accuracy in discriminating the extracted features. Given the increasing in computational power and the broad develop of classification techniques, both EEG and fNIRS are widely used for this purpose. The most common approaches for both technique can be grouped in five category: linear classifiers, neural networks, nonlinear Bayesian classifiers, nearest neighbor classifiers and combinations of classifiers \parencite{lotte2007review}. Obviously, each of these approaches has advantages and disadvantages that are also related to the specific imaging technique limitations. One way to reduce these limitations and improve the classification performance is to combine EEG and fNIRS in a joint BCI framework. 
+
+EEG-fNIRS has been applied also in non BCI tasks showing the improvements of an unified framework \parencite{tongconcurrent,salvatori2006combining,croce nirs}. In the BCI context, \textcite{Fazli_2012} proposed Linear Discriminant Analysis to classify the features extracted from EEG and fNIRS recordings (event related desinchronization, ERD for EEG and time averaged concentration changes for fNIRS) during executed movements as well as motor imagery. They showed the improvement in classification using both measurements. The limitations here is related to the long time delay of the hemodynamic response. In \textcite{ma2012hybrid} a Gaussian radial-basis kernel Support Vector Machine (SVM) was used to classifies EEG power spectral density and the average amplitude of the cerebral blood oxygen signal in a movement imagery task. In this case the hybrid approach ensure a good separation between rest condition and motor imagery condition but not the same for separation between right and left motor imagery. Likewise,  \textcite{lee2014hybrid} employed LDA to classify three conditions: right-left motor imagery and idle status using both EEG ans fNIRS features. In the hybrid case they reach a classification accuracy of about $65\%$. In order to reduce the drawbacks due to the lag in the hemodynamic response, in  \textcite{buccino2016hybrid} the futures to be submitted to a LDA were extracted combining two methods: Regularized Common Spatial Patterns (RCSP) for EEG and combination of average and slope indicators for fNIRS signals. In this case an accuracy between $72-79\%$ was reached in a movement recognition task in the hybrid case. In  \textcite{khan2014decoding, khan2017hybrid} LDA was used to classify mean values of peak amplitude of selected motor area channels for EEG and mean values of HbO and dHbO for fNIRS in a control commands task obtaining accuracy values ranging between $80-95\%$. Also awake and drowsy states classification problem has been successfully addressed by means of a combined EEG-fNIRS system \parencite{nguyen2017utilization}. 
+
+In our knowledge, no studies used deep learning to assess classifications tasks with combined EEG-fNIRS measurements. \textcite{bashivan2015learning} used deep learning to classify cognitive load. 
+In the simplest fashion, deep learning  refers to Artificial Neural Networks (ANN) that are composed of many layers. ANN belong to supervised learning algorithms needing labeled examples to be trained (learning process) [citazione]. The learning process relies on back-propagation algorithm that allows the network to automatically tune their parameters (generally called weights) minimizing a cost function [citazione].   In the deep learning algorithms fall Convolutional Neural Networks (CNN). CNN are tools designed to deal with data coming in the form of multidimensional arrays,  as a colour image composed of three 2D matrix containing pixel intensities in the three colour channels \parencite{lecun2015deep}. Such architecture aims to preserve also the spatial information in the analysed sample.
+
+ In this paper we build a deep learning framework composed of two CNN and a fully connected layer [poi da specificare bene]. CNN layers are employed to extract also spatial information from EEG data. Indeed, we used, as training data for convolutional layers, the spatial maps obtained from EEG power in three different frequency bands (theta, alpha and beta as in the case of RGB colours). In the last layer of our NN enters fNIRS informations in a fully connected layer. [Breve descrizione dei risultati]
+[Descrizione organizzazione paper]
+
+
+
+\section{Methods}
+
+\section{Results}
+
+\section{Discussion}
+
+\section{Conclusion}
+
+\section{Acknowledgements}
+This study was partially funded by grant: H2020, ECSEL-04-2015-Smart Health, Advancing Smart Optical Imaging and Sensing for Health (ASTONISH).
+ 
+
+\newpage
+\printbibliography
+\cleardoublepage
+\addcontentsline{toc}{section}{\refname}
+\end{document}
+

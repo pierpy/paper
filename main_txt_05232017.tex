@@ -1,0 +1,98 @@
+
+\documentclass[12pt ]{iopart}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage[autostyle,italian=guillemets]{csquotes}%bibliografia
+%%\usepackage[bibstyle=authoryear,citestyle=authoryear-comp,backend=biber,uniquelist=false]{biblatex}%stile bibliografia
+\usepackage[style=authoryear-icomp,maxbibnames=9,maxcitenames=1,uniquelist=false,
+    backend=biber]{biblatex}
+
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+\addbibresource{b.bib}
+%\newcommand{\gguide}{{\it Preparing graphics for IOP Publishing journals}}
+%Uncomment next line if AMS fonts required
+%\usepackage{iopams}  
+\begin{document}
+
+\title[DNN for EEG-fNIRS BCI]{Deep Learning for  hybrid EEG-fNIRS Brain Computer Interface: application to Motor Imagery Classification}
+
+\author{Pierpaolo Croce\textsuperscript{1,2}, Filippo Zappasodi\textsuperscript{1,2}, Francesco di Pompeo\textsuperscript{1,2} Arcangelo Merla\textsuperscript{1,2} \& Antonio Maria Chiarelli\textsuperscript{1,2}}
+
+\ead{pierpaolo.croce@unich.it}
+\vspace{10pt}
+\begin{indented}
+\item[] \textsuperscript{1} Department of Neuroscience, Imaging and Clinical Sciences, "G.d’Annunzio" University, Chieti, Italy
+\item[] \textsuperscript{2} Institute of Advanced Biomedical Technologies, "G.d’Annunzio" University, Chieti, Italy
+\end{indented}
+
+\begin{abstract}
+	\\
+	\textit{Objective.} to be filled. \\
+	\textit{Approach.} to be filled.\\
+	\textit{Main Results.} to be filled. \\
+	\textit{Significance.} to be filled.
+\end{abstract}
+
+
+\section{Introduction}
+
+Brain Computer Interface (BCI) refers to a group of procedures that directly link  central nervous system to a computer or a device \parencite{lotte2007review}. BCI can focus on mapping, assisting, augmenting, or repairing human cognitive and sensory-motor functions. 
+Historically, BCI was performed using Electroencephalography (EEG) \parencite{wolpaw2000brain}. EEG  provides information regarding brain electrical activity with very high temporal resolution (ms scale) \parencite{hallez2007review}. 
+
+In the last years, BCI studies investigated the possibility of combining EEG with other neuroimaging technologies \parencite{amiri2013review}. Among these, functional Near Infrared Spectroscopy (fNIRS) provided encouraging results \parencite{hennrich2015investigating} .
+
+EEG and fNIRS are both flexible, scalp located procedures. Whereas EEG captures the macroscopic temporal dynamics of brain electrical activity through passive voltages evaluation, fNIRS estimates brain hemodynamic oscillations  relying on spectroscopic measurements of oxy- and deoxy-hemoglobin (HbO and Hb, respectively) fluctuations in the cortex \parencite{boas2014twenty, villringer1997non}. Orthogonally with respect to EEG, fNIRS, depending on the slow dynamics of the hemodynamic response, yields low temporal resolution but, because of the fast exponential decay of light sensitivity, it provides good spatial resolution (around 1 cm) \parencite{chiarelli2016combining}. 
+
+Because of different physiological information provided by and characteristic of EEG and fNIRS \parencite{croce2016eeg}, higher BCI performances  of combined measurements with respect to standalone EEG were reported extensively \parencite{buccino2016hybrid, lee2014hybrid, fazli2012enhanced}.
+
+Two main processing steps are involved in BCI:  feature extraction and classification. 
+
+EEG features are usually extracted based on the power of the signal frequency bands. Indeed, well-distinct behaviors of EEG signal have been identified based on signal frequencies (delta ($< 4 Hz$), theta ($4-7 Hz$), alpha ($8-15 Hz$), beta ($16-31 Hz$), and gamma ($> 31 Hz$) \parencite{wolpaw2002brain}). For example, during the execution of a motor task (or during the imagination or observation of the movement), the beta activity is suppressed in related brain areas (Event Related Desynchronization, ERD) \parencite{neuper2006erd}.  
+fNIRS  features are generally  computed from  HbO and Hb variations in the brain which are dependent, among others, on the  Blood Oxygen Level Dependant (BOLD) effect \parencite{naseer2015fnirs}. 
+
+The classification procedure aims to accurately classify the brain state  based on the extracted signal features  and it is a fundamental step of BCI processing.
+
+Different  experiment and algorithms have been applied  to combined EEG-fNIRS BCI. \textcite{Fazli_2012} proposed Linear Discriminant Analysis to classify ERD EEG and time average fNIRS concentration changes during executed movements as well as motor imagery.  In \textcite{ma2012hybrid} a Gaussian radial-basis kernel Support Vector Machine (SVM) was used to classify a motor imagery BCI based on EEG power spectral densities and fNIRS amplitude of the cerebral blood oxygen signal.   \textcite{lee2014hybrid} employed LDA on combined EEG and fNIRS features to classify three conditions: right and left motor imagery and idle status . They reached a classification accuracy of about $65\%$. In \textcite{buccino2016hybrid} the features to be submitted to a LDA were extracted combining two methods: Regularized Common Spatial Patterns (RCSP) for EEG and combination of average and slope indicators for fNIRS signals. In this case an accuracy between $72-79\%$ was reached in a movement recognition task. In  \textcite{khan2014decoding, khan2017hybrid} LDA was used to classify control commands based on EEG peak amplitudes of selected motor area channels and mean values of HbO and Hb for fNIRS with accuracy ranging between $80-95\%$.
+For all of the above mentioned studies, the authors recognized and increase BCI performance of combined measurements with respect to standalone fNIRS and EEG.
+
+Recently, Deep Learning Classifiers are increasing their popularity. In the simplest fashion, Deep Learning  refers to Artificial Neural Networks (NN) [ref.] that are composed of many layers. Deep NNs (DNN) use a cascade of  layers of nonlinear processing units (neurons). Each successive layer uses the output from the previous layer as input and all, or part, of the neurons from consecutive layers are connected. DNN can perform very complex, non-linear, transformations-classifications, greatly increasing shallow NN  [cit.]  and other classifiers performances (LDA, SVM, etc.). In fact, they can reach unprecedented classification outcomes when applied to signals and or images [ref.]. Because of their performances, these algorithms are also receiving  attention within the biomedical field [cit.]. 
+Multiple technological development allowed for Deep learning evolution. 
+Among them, the increased computation power clearly played an important role.
+However, the major improvements are algorithms related and they can be divided in three  categories:
+\begin{itemize}
+	\item[-] Implementation of Efficient learning algorithms that avoid local minima in the objective function and poor generalization (over-fitting) [ref.]; because of the presence of many free parameters (sometimes millions or more), and the possibility to represent very complex functions, DNN were usually affected by local minima in the objective function and over-fitting  during training. 
+	\item[-] Development of new Neuron's activation functions (such as Rectified Linear Unit Function, ReLU function) that dampen  the vanishing gradient problem; in fact traditional activation functions such as the hyperbolic tangent or the sigmoid functions had wide ranges of the independent variables with small gradients;  this aspect, combined with the back propagation algorithm, exponentially dampened weight update rate going from the last to the first layers, heavily slowing the overall learning rate of the network.
+	\item[-] Implementation of  Neural Networks were Neurons are connected to portions of signals and or images that are close in time and/or space (Convolutional Neural Networks, CNNs), encoding temporal and/or spatial information; standard, full connected DNN  did not encode any spatio-temporal information.
+\end{itemize}
+
+DNN have been successfully applied to  both EEG and fNIRS BCI classification problem. In \textcite{jirayucharoensak2014eeg} a Deep Learning Network was used to classify three levels of valence and arousal based on EEG power spectral densities  features. They reached an accuracy of about $50\%$. 
+\textcite{hajinoroozi2015feature} employed Deep Belief Network to EEG signals for the classification of driver's cognitive states. 
+In \textcite{an2014deep} left vs. right motor imagery classification  was performed by employing few EEG recording channels via DNN with an average accuracy of about $80\%$ . 
+ \textcite{bashivan2015learning} trained a CNN using EEG power in three different frequency bands of interest. They reported a best-performance accuracy of about $92\%$.
+
+Regarding fNIRS,only  few  studies were performed employing Deep Learning.  \textcite{hennrich2015investigating} investigated DNN classification performances of three mental task reporting accuracy values similar  to other classification algorithms (such as LDA and SVM).  \textcite{abibullaev2011neural} classified four mental task through DNN with an accuracy of $94\%$. Finally, \textcite{nguyen2013temporal} classified Left vs. Right motor imagery fNIRS activity with average accuracy of $85\%$. To the best of our knowledge, no studies implementing deep learning algorithm for BCI classifications  in a combined EEG-fNIRS framework were performed.
+
+ In this paper, by expecting significant overall BCI performances,  we investigated the capabilities of combining multi modal EEG-fNIRS brain recordings  with state-of the art Deep learning Classification procedures. As a first investigation step, we performed a Left vs. Right Hand Motor Imagery task [cit.] and, by employing a common temporal frame of 1 second between technologies [cit.], Left vs Right classification accuracy of a DNN in in the multimodal recording modality  [ref.] was estimated and compared to other classification algorithms and to standalone EEG and fNIRS. 
+
+
+
+
+\section{Methods}
+
+\section{Results}
+
+\section{Discussion}
+
+\section{Conclusion}
+
+\section{Acknowledgements}
+This study was partially funded by grant: H2020, ECSEL-04-2015-Smart Health, Advancing Smart Optical Imaging and Sensing for Health (ASTONISH).
+ 
+
+\newpage
+\printbibliography
+ \cleardoublepage
+\addcontentsline{toc}{section}{\refname}
+\end{document}

@@ -1,0 +1,95 @@
+
+\documentclass[12pt ]{iopart}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage[autostyle,italian=guillemets]{csquotes}%bibliografia
+%%\usepackage[bibstyle=authoryear,citestyle=authoryear-comp,backend=biber,uniquelist=false]{biblatex}%stile bibliografia
+\usepackage[style=authoryear-icomp,maxbibnames=9,maxcitenames=1,uniquelist=false,
+    backend=biber]{biblatex}
+
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+\addbibresource{b.bib}
+%\newcommand{\gguide}{{\it Preparing graphics for IOP Publishing journals}}
+%Uncomment next line if AMS fonts required
+%\usepackage{iopams}  
+\begin{document}
+
+\title[CNN EEG-fNIRS]{Deep Convolutional Neural Networks for  hybrid EEG-fNIRS Brain Computer Interface: application to Motor Imagery Classification}
+
+\author{Pierpaolo Croce\textsuperscript{1,2}, Filippo Zappasodi\textsuperscript{1,2}, Francesco di Pompeo\textsuperscript{1,2} Arcangelo Merla\textsuperscript{1,2} \& Antonio Maria Chiarelli\textsuperscript{1,2}}
+
+\ead{pierpaolo.croce@unich.it}
+\vspace{10pt}
+\begin{indented}
+\item[] \textsuperscript{1} Department of Neuroscience, Imaging and Clinical Sciences, "G.d’Annunzio" University, Chieti, Italy
+\item[] \textsuperscript{2} Institute of Advanced Biomedical Technologies, "G.d’Annunzio" University, Chieti, Italy
+\end{indented}
+
+\begin{abstract}
+	\\
+	\textit{Objective.} to be filled. \\
+	\textit{Approach.} to be filled.\\
+	\textit{Main Results.} to be filled. \\
+	\textit{Significance.} to be filled.
+\end{abstract}
+
+
+\section{Introduction}
+
+Brain Computer Interface (BCI) refers to a group of procedures that directly link  central nervous system to a computer or a device [ref.]. BCI can focus on mapping, assisting, augmenting, or repairing human cognitive and sensory-motor functions. 
+Historically, BCI was performed using Electroencephalography (EEG) [ref.]. EEG  provides information regarding brain electrical activity with very high temporal resolution [ref.]. 
+
+In the last years, BCI studies investigated the possibility of combining EEG with other neuroimaging technologies [ref.]. Among these, functional Near Infrared Spectroscopy (fNIRS) provided encouraging results [ref.]. 
+
+EEG and fNIRS are both flexible, scalp located procedures. Whereas EEG captures the macroscopic temporal dynamics of brain electrical activity through passive voltages evaluation, fNIRS estimates brain hemodynamic oscillations  relying on spectroscopic measurements of oxy- and deoxy-hemoglobin fluctuations in the cortex [ref.]. Orthogonally with respect to EEG, fNIRS, depending on the slow dynamics of the hemodynamic response, yields low temporal resolution but, because of the fast exponential decay of light sensitivity, it provides good spatial resolution (around 1 cm) \parencite{chiarelli2016combining}. 
+
+Because of different physiological information provided by and characteristic of EEG and fNIRS [ref. croce], higher BCI performances  of combined measurements with respect to standalone EEG were reported extensively [ref.] .
+
+Two main processing steps are involved in BCI:  feature extraction and feature classification. 
+
+EEG features are usually extracted based on the power of the signal frequency bands. Indeed, well-distinct behaviors of EEG signal have been identified based on signal frequencies (delta ($< 4 Hz$), theta ($4-7 Hz$), alpha ($8-15 Hz$), beta ($16-31 Hz$), and gamma ($> 31 Hz$) ref.]). For example, during the execution of a motor task (or during the imagination or observation of the movement), the beta activity is suppressed in related brain areas(Event Related Desynchronization, ERD)[ref.].  
+fNIRS  features are generally  computed from  oxy- and deoxy-hemoglobin variations in the brain which are dependent, among others, on the  Blood Oxygen Level Dependant (BOLD) effect [cit.]. 
+
+The classification procedure aims to accurately classify the brain state  based on the extracted signal features  and it can be considered the core of BCI processing.
+
+
+With respect to combined EEG-fNIRS BCI, different BCI experiment and algorithms have been applied. \textcite{Fazli_2012} proposed Linear Discriminant Analysis to classify the features extracted from EEG and fNIRS recordings ( ERD for EEG and time averaged concentration changes for fNIRS) during executed movements as well as motor imagery.  In \textcite{ma2012hybrid} a Gaussian radial-basis kernel Support Vector Machine (SVM) was used to classify EEG power spectral density and average amplitude of the cerebral blood oxygen signal in a movement imagery task.  Likewise,  \textcite{lee2014hybrid} employed LDA to classify three conditions: right-left motor imagery and idle status using both EEG ans fNIRS features. In the hybrid case they reach a classification accuracy of about $65\%$. In order to reduce the drawbacks due to the lag in the hemodynamic response, in  \textcite{buccino2016hybrid} the futures to be submitted to a LDA were extracted combining two methods: Regularized Common Spatial Patterns (RCSP) for EEG and combination of average and slope indicators for fNIRS signals. In this case an accuracy between $72-79\%$ was reached in a movement recognition task in the hybrid case. In  \textcite{khan2014decoding, khan2017hybrid} LDA was used to classify mean values of peak amplitude of selected motor area channels for EEG and mean values of HbO and dHbO for fNIRS in a control commands task obtaining accuracy values ranging between $80-95\%$. 
+
+Recently, Deep Learning Classifiers are increasing their popularity. In the simplest fashion, Deep Learning  refers to Artificial Neural Networks (ANN) that are composed of many layers. Deep ANNs use a cascade of  layers of nonlinear processing units (neurons). Each successive layer uses the output from the previous layer as input and all, or part, of the neurons from consecutive layers are connected. Deep (many layers) ANN, can perform very complex, non-linear, transformations-classifications, greatly increasing shallow ANN  [cit.]  and other classifiers performances (LDA, SVM, etc.). In fact, they can reach unprecedented classification outcomes when applied to signals and or images [ref.]. Because of their performances, these algorithms are also receiving  attention within the biomedical field [cit.]. 
+Multiple technological development allowed for Deep learning evolution. 
+Among them, the increased computation power clearly played an important role.
+However, the major improvements are algorithms related and they can be divided in three  categories:
+\begin{itemize}
+	\item[-] Implementation of Efficient learning algorithms that avoid local minima in the objective function and poor generalization (over-fitting) [ref.]; because of the presence of many free parameters (sometimes millions or more), and the possibility to represent very complex functions, ANN were usually affected by local minima in the objective function and over-fitting  during training. 
+	\item[-] Development of new Neuron's activation functions (such as Rectified Linear Unit Function, ReLU function) that dampen  the vanishing gradient problem; in fact traditional activation functions such as the hyperbolic tangent or the sigmoid functions had wide ranges of the independent variables with small gradients;  this aspect, combined with the back propagation algorithm, exponentially dampened weight update rate going from the last to the first layers, heavily slowing the overall learning rate of the network.
+	\item[-] Implementation of Convolution Neural Networks (CNN) in which Neurons are connected with portions of signals and or images that are close in time and/or space (encoding temporal and/or spatial information); standard, full connected ANN  did not encode any   spatio-temporal information while increasing the number of free parameters.
+\end{itemize}
+Deep NN have been successfully applied with  both EEG and fNIRS features. In \textcite{jirayucharoensak2014eeg} a Deep Learning Network is used to classify three levels of valence and arousal based on power spectral densities as features. They reached an accuracy of about $50\%$. 
+\textcite{hajinoroozi2015feature} employed Deep Belief Network to EEG channels epoch for the classification of driver's cognitive states. 
+In \textcite{an2014deep} left-right motor imagery classification of only few EEG channels was performed via Deep NN reaching an average accuracy of about $80\%$. 
+Also Convotutional NN have been tested on EEG data. Indeed, \textcite{bashivan2015learning} trained a Convolutional NN using EEG power in three different frequency bands of interest. In the best case they reached an accuracy of about $92\%$ but using a very large number of parameters.
+In the fNIRS case, few contrasting results have been reported. Indeed, \textcite{hennrich2015investigating} investigated the classification problem of three mental task reporting accuracy value similar but not higher with respect others algorithms (LDA and SVM). Against, \textcite{abibullaev2011neural} classified four mental task through Artificial NN with an accuracy of $94\%$. Lastly, \textcite{nguyen2013temporal} classified left-right motor imagery fNIRS activity with mean accuracy of $85\%$ and $72.5\%$ for right and left conditions, respectively. In our knowledge, no studies used deep learning to assess classifications tasks with combined EEG-fNIRS measurements. In this paper, by expecting significant overall BCI performances,  we investigated the capabilities of combining multi modal EEG-fNIRS brain recordings  with state-of the art Deep learning Classification procedures. As a first investigation step, we performed a Left Hand-Right Hand Motor Imagery task [cit.] and, by employing a common temporal frame of 1 second between technologies [cit.], Left vs Right classification accuracy of the Deep CNN  [ref.] was estimated. 
+
+
+
+
+\section{Methods}
+
+\section{Results}
+
+\section{Discussion}
+
+\section{Conclusion}
+
+\section{Acknowledgements}
+This study was partially funded by grant: H2020, ECSEL-04-2015-Smart Health, Advancing Smart Optical Imaging and Sensing for Health (ASTONISH).
+ 
+
+\newpage
+\printbibliography
+\cleardoublepage
+\addcontentsline{toc}{section}{\refname}
+\end{document}
+

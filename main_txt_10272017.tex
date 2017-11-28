@@ -1,0 +1,337 @@
+%\documentclass[options]{class}
+\documentclass[12pt]{iopart}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage[space]{grffile}
+%\usepackage[ansinew]{inputenc}
+%\usepackage[latin1]{inputenc}
+\usepackage{epstopdf}
+\usepackage[autostyle,italian=guillemets]{csquotes}%bibliografia
+%%\usepackage[bibstyle=authoryear,citestyle=authoryear-comp,backend=biber,uniquelist=false]{biblatex}%stile bibliografia
+\usepackage[style=authoryear-icomp,maxbibnames=9,maxcitenames=1,uniquelist=false,
+    backend=biber]{biblatex}
+
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+\addbibresource{b.bib}
+%\newcommand{\gguide}{{\it Preparing graphics for IOP Publishing journals}}
+%Uncomment next line if AMS fonts required
+%\usepackage{iopams}  
+\begin{document}
+
+\title[DNN for EEG-fNIRS BCI]{Deep Learning for  hybrid EEG-fNIRS Brain-Computer Interface: application to Motor Imagery Classification}
+
+\author{Antonio Maria Chiarelli\textsuperscript{1,2*}, Pierpaolo Croce\textsuperscript{1,2*}, Arcangelo Merla\textsuperscript{1,2}, Filippo Zappasodi\textsuperscript{1,2}}
+
+\ead{antonio.chiarelli@unich.it}
+\vspace{10pt}
+\begin{indented}
+\item[] \textsuperscript{1} Department of Neuroscience, Imaging and Clinical Sciences, "G. d'Annunzio University, Chieti, Italy
+\item[] \textsuperscript{2} Institute of Advanced Biomedical Technologies, "G. d'Annunzio" University, Chieti, Italy
+\item[] \textsuperscript{*} The authors contributed equally and are displayed in alphabetical order
+\end{indented}
+
+\begin{abstract}
+	\textit{Objective.} Brain-Computer Interface (BCI) refers to procedures that link the central nervous system to a device.  BCI was historically performed using Electroencephalography (EEG). In the last years, encouraging results were obtained by combining EEG with other neuroimaging technologies, such as functional Near Infrared Spectroscopy (fNIRS). A crucial step of BCI is brain state classification from recorded signal features. Deep Artificial Neural Networks (DNNs) recently reached unprecedented complex classification outcomes. These performances were achieved through increased computational power, efficient learning algorithms, valuable activation functions, and restricted or back-fed neurons connections. By expecting significant overall BCI performances, we investigated the capabilities of combining EEG and fNIRS recordings with state-of-the-art Deep Learning procedures.
+	\textit{Approach.} We performed a guided Left and Right Hand Motor Imagery task on 6 subjects with a fixed classification response time of 1 second and overall experiment length of 10 minutes. Left vs. Right classification accuracy of a DNN in the multimodal recording modality was estimated and it was compared to standalone EEG and other classifiers.
+	\textit{Main Results.} At both single subject and group level we obtained significant increase in performance when considering multimodal recordings and DNN classifier with cumulative effect (up to $\sim25\%$ improvement in classification accuracy in one subject).
+	\textit{Significance.} BCI performances can be significantly improved by employing multimodal recordings that provide electrical and hemodynamic brain activity information, in combination with advanced non-linear Deep Learning classification procedures.
+\end{abstract}
+
+
+\section{Introduction}
+
+Brain Computer Interface (BCI) refers to a group of procedures that directly link  central nervous system to a computer or a device \parencite{wolpaw2000brain}. BCI can focus on mapping, assisting, augmenting, or repairing human cognitive and sensory-motor functions. 
+Historically, BCI was performed using Electroencephalography (EEG) \parencite{lotte2007review} which  provides information about brain electrical activity with very high temporal resolution (ms scale) \parencite{hallez2007review}. 
+
+In the last years, BCI studies investigated the possibility of combining EEG with other neuroimaging technologies \parencite{pfurtscheller2010hybrid}. Among these, functional Near Infrared Spectroscopy (fNIRS) provided encouraging results \parencite{fazli2012enhanced}. 
+
+EEG and fNIRS are both flexible, scalp located procedures that can be employed for monitoring multiple populations in ecological conditions \parencite{farroni2013infant, costantini2013studying, zappasodi2017prognostic, watanabe1999neonatal}. Whereas EEG captures the macroscopic temporal dynamics of brain electrical activity through passive voltages evaluation, fNIRS estimates brain hemodynamic oscillations  relying on spectroscopic measurements of oxy- and deoxy-hemoglobin (HbO and Hb, respectively) fluctuations in the cortex \parencite{villringer1997non, ferrari2012brief}. Orthogonally with respect to EEG, fNIRS depends on the slow dynamics of the hemodynamic response and it yields low temporal resolution. However, because of the fast exponential decay of light sensitivity, it provides good spatial resolution (around 1 cm) \parencite{chiarelli2016combining, chiarelli2015comparison}. 
+
+Because of different characteristics and physiological information provided by EEG and fNIRS \parencite{croce2017exploiting}, higher BCI performances  of combined measurements with respect to standalone EEG were reported extensively \parencite{fazli2012enhanced, khan2014decoding, hong2015classification, chiarelli2017simultaneous, shin2017evaluation, shin2017open}.
+
+Two main processing steps are involved in BCI:  feature extraction and classification. 
+
+EEG features are usually extracted based on the power of the signal frequency bands. Indeed, well-distinct behaviors of EEG signal have been identified based on signal frequencies [delta ($< 4 Hz$), theta ($4-7 Hz$), alpha ($8-15 Hz$), beta ($16-31 Hz$), and gamma ($> 31 Hz$) \parencite{nuwer1988quantitative}]. For example, during the execution of a motor task (or during the imagination or observation of the movement), the beta activity is suppressed in related brain areas (Event Related Desynchronization, ERD) \parencite{pfurtscheller2001functional, pfurtscheller2006future}.  
+fNIRS  features are generally  computed from  HbO and Hb variations in the brain which are dependent, among others, on the  Blood Oxygen Level Dependent (BOLD) effect \parencite{steinbrink2006illuminating, naseer2015fnirs}. 
+
+The classification procedure aims to accurately classify the brain state  based on the extracted signal features  and it is a fundamental step of BCI processing.
+
+
+Different  experimental settings and algorithms have been applied  to combined EEG-fNIRS BCI.  \textcite{Fazli_2012} proposed Linear Discriminant Analysis (LDA) to classify ERDs and time average fNIRS concentration changes during executed movements as well as motor imagery.  In \textcite{ma2012hybrid} a Gaussian Radial-Basis kernel Support Vector Machine (SVM) was used to classify a motor imagery BCI based on EEG power spectral densities and fNIRS signal amplitudes.   \textcite{lee2014hybrid} employed LDA on combined EEG and fNIRS features to classify three conditions: right and left motor imagery plus the idle status. They reached a classification accuracy of about $65\%$. In \textcite{buccino2016hybrid} the features to be submitted to a LDA were extracted combining different metrics: Regularized Common Spatial Patterns (RCSP) for EEG and combination of average and slope indicators for fNIRS signals. In this case an accuracy between $72-79\%$ was reached in a movement recognition task. In  \textcite{khan2014decoding, khan2017hybrid} LDA was used to classify control commands based on EEG peak amplitudes of selected motor area channels and mean values of HbO and Hb for fNIRS with accuracy ranging between $80-95\%$.
+For all of the above mentioned studies, the authors recognized an increase BCI performance of combined measurements with respect to standalone fNIRS and EEG.
+
+Recently, Deep Learning Classifiers are increasing their popularity. In the simplest fashion, Deep Learning  refers to artificial Neural Networks (NN) \parencite{lecun2015deep, schmidhuber2015deep} that are composed of many layers. Deep NNs (DNNs) use a cascade of  layers of nonlinear processing units (neurons). Each successive layer uses the output from the previous layer as input and all, or part, of the neurons from consecutive layers are connected. DNN can perform very complex, non-linear, transformations-classifications, greatly increasing shallow NN  \parencite{bianchini2014complexity}  and other classifiers performances (LDA, SVM, etc.). In fact, they can reach unprecedented classification outcomes when applied to signals (e.g. speech and language processing) and or images \parencite{simonyan2014very, hinton2012deep, collobert2008unified, krizhevsky2012imagenet}. Because of their performances, these algorithms are also receiving  attention within the biomedical field \parencite{ronneberger2015u, hudson2000neural, ciresan2012deep}. 
+Multiple technological development allowed for Deep Learning evolution. 
+Among them, the increased computation power clearly played an important role.
+However, the major improvements are  related to algorithm evolvement and they can be divided in four  categories:
+
+\begin{itemize}
+	\item[-] Implementation of efficient learning algorithms that avoid local minima in the objective function and poor generalization (over-fitting) \parencite{kingma2014adam}; because of the presence of many free parameters (sometimes millions or more), and the possibility to represent very complex functions, DNNs were usually affected by local minima in the objective function and over-fitting  during training. 
+	\item[-] Development of new Neuron's activation functions (such as Rectified Linear Unit Function, ReLU function \parencite{dahl2013improving, maas2013rectifier}) that dampen  the vanishing gradient problem \parencite{pascanu2013difficulty}; in fact traditional activation functions such as the hyperbolic tangent or the sigmoid function had wide ranges of the independent variables with small gradients;  this aspect, combined with the back propagation algorithm \parencite{hecht1988theory}, exponentially dampened weight update rate going from the last to the first layers, heavily slowing the overall learning rate of the network.
+	\item[-] Implementation of  Neural Networks where Neurons are connected to portions of signals and or images that are close in time and/or space (Convolutional Neural Networks, CNNs \parencite{krizhevsky2012imagenet, kalchbrenner2014convolutional}), encoding temporal and/or spatial information; standard, full connected DNN  did not encode any spatio-temporal information.
+	\item[-] Development of  Neural Networks where outputs are fed back into the network in a sequential manner that allow information storage (Recurrent Neural Networks, RNNs \parencite{mikolov2010recurrent, hochreiter1997long}). Standard, full connected DNN  did not provide memory capabilities and sequential information control.
+\end{itemize}
+
+DNN have been successfully applied to  both EEG and fNIRS BCI classification problem. In \textcite{jirayucharoensak2014eeg} a DNN was used to classify three levels of valence and arousal based on EEG power spectral densities  features. They reached an accuracy of about $50\%$. 
+\textcite{hajinoroozi2015feature} employed Deep Belief Network to EEG signals for the classification of driver's cognitive states. 
+In \textcite{an2014deep} Left vs. Right motor imagery classification  was performed by employing few EEG recording channels via DNN with an average accuracy of about $80\%$. 
+ \textcite{bashivan2015learning} trained a CNN using EEG power in three different frequency bands of interest. They reported a best-performance accuracy of about $92\%$.
+
+Regarding fNIRS, only  few  studies were performed employing Deep Learning.  \textcite{hennrich2015investigating} investigated DNN classification performances of three mental task reporting accuracy values similar  to other classification algorithms (such as LDA and SVM).  \textcite{abibullaev2011neural} classified four mental task through DNN with an accuracy of $94\%$. Finally, \textcite{nguyen2013temporal} classified Left vs. Right motor imagery fNIRS activity with average accuracy of $85\%$. To the best of our knowledge, no studies implementing deep learning algorithm for BCI classifications  in a combined EEG-fNIRS framework were performed.
+
+In this paper, by expecting significant overall BCI performances,  we investigated the capabilities of combining multi modal EEG-fNIRS brain recordings  with state-of the art Deep Learning classification procedures. As a first investigation step, we performed a guided Left and Right Hand Motor Imagery task \parencite{pfurtscheller1997motor} and, by employing a common temporal frame of 1 second between technologies \parencite{govindan2016novel}, Left vs Right classification accuracy of a DNN in the multimodal recording modality was estimated and compared to standalone EEG and other classification algorithms. 
+
+\begin{figure}
+	\includegraphics[width=\linewidth]{Slide1.JPG}
+	\caption{ Motor imagery task sequence. The 
+		squeezing imagery consisted of 5 seconds of task and 10 seconds of rest. Right or Left imagery instruction was presented in a pseudo-random order.  During the 5 seconds of task, the subjects were instructed to perform a hand squeezing imagery with a repetition frequency of $\sim1Hz$. The task provided a total number of 20 Left-hand and 20 Right-Hand 5 seconds task, for a total of 40 task that, by considering a response time of 1 second, provided a total number of 200 trials per subject in an experiment time of 10 minutes.}
+	\label{fig:fig1}
+\end{figure}
+
+\section{Methods}
+\subsection{Experimental Paradigm}
+Six healthy subjects (males, average age of $34\pm5$ years) were recruited for the study. All subjects were right handed, reported no history of neurological or psychiatric disease and did not receive psychoactive medications. 
+Subjects sat on a chair with the arms comfortably resting on a desk and were asked to perform right or left hand squeezing imagery guided by an acoustic stimulus. The motor imagery task sequence is depicted in figure \ref{fig:fig1}. The squeezing imagery consisted of 5 seconds of task and 10 seconds of rest. Right or Left imagery instruction was presented in a pseudo-random order.  During the 5 seconds of task, the subjects were instructed to perform the squeezing imagery with a repetition frequency of $\sim1Hz$. The task provided a total number of 20 Left-hand and 20 Right-Hand 5 seconds task, for a total of 40 task that, by considering a response time of 1 second, provided a total number of 200 trials per subject in an experiment time of 10 minutes
+
+\begin{figure}
+	\includegraphics[width=\linewidth]{Slide2.JPG}
+	\caption{a) Pictures of the full head EEG cap and optical probes located on a dummy head. The EEG was a Electrical Geodesic Net 300 system. The fNIRS spectrometer was an Imagent from ISS. Light was sent to the scalp using multimodal optical fibers (0.4 mm core) and from the scalp back to the PMTs using fiber bundles (3 mm diameter).  The fibers were held in place using soft, but rigid, custom-built optical patches located on top of the EEG. b) Optical layout employed for each hemisphere. The optical layout consisted of 3 fNIRS channels over C3 and C4 with an interoptode distance (3.5 cm) that allowed sensitivity to brain activity. One short distance channel (1.5 cm),  not sensitive to brain activity (its sensitivity pattern did not reach the brain cortex), provided information regarding scalp-related hemodynamic oscillations to the classifiers. c) EEG electrodes and fNIRS optodes employed in the study overlayed onto a rendered structural Magnetic Resonance Image of a representative subject. }
+	\label{fig:fig2}
+\end{figure}
+
+
+\subsection{ElectroEncephalography Recordings}
+Brain electric activity was recorded with a full-head, 128 channels EEG system (Electrical Geodesic Inc, EEG System Net 300, figure \ref{fig:fig1}a,c.).
+Skin/electrode impedance was measured before recordings and kept below $50 k\Omega$. EEG data were sampled at 250 Hz and processed in a real time fashion.  Raw data were stored over a 1 second window and filtered between 13 and 30 Hz (within the 1 second window, zero-phase 2nd order Digital Butterworth filter). The beta-band filtered signal was squared and averaged over the second ($\beta_{Pow}$).
+ The Event-Related Synchronizations (ERSs) or Event-Related Desynchronizations (ERDs) (Pfurtscheller and Lopes da Silva, 1999; Neuper and Pfurtscheller, 2001) were obtained as relative changes in power during the motor imagery execution with respect to rest:
+
+\begin{equation}
+\label{eqn:erders}
+ERD/ERS=\frac{\beta_{PowMI}-\beta_{PowBas}}{\beta_{PowBas}}
+\end{equation} 
+
+where $\beta_{PowMI}$ is the average power over 1 second window during the task and $\beta_{PowBas}$ is the average power in a 1 second window prior to the task onset.
+ERD/ERS values for each second during the task were fed to the learning algorithms for classification. Only 123 of the 128 EEG electrodes were employed in the learning process (5 auxiliary signal electrodes were removed).
+
+\subsection{functional Near Infared Spectroscopy Recordings}
+Brain hemodynamic activity was recorded over the sensorimotor regions (C3 and C4, 10-20 System) employing a commercial NIR spectrometer from ISS (Imagent, Champaign, Illinois).
+The apparatus is a Frequency Domain system equipped with 32 laser diodes ($\sim$1 mW  power, 16 emitting light at 690 nm and 16 at 830 nm) and 4 photo-multiplier tubes (PMTs). 
+8 light sources (4 injection point, 2 wavelengths) and 1 detector were employed for each hemisphere. Time-multiplexing was employed for source coding with a total system sampling frequency of 10 Hz.  Light was sent to the scalp using multimodal optical fibers (0.4 mm core) and from the scalp back to the PMTs using fiber bundles (3 mm diameter).  The fibers were held in place using soft, but rigid, custom-built optical patches located on top of the EEG, figure \ref{fig:fig1}a, with an optical layout reported in figure \ref{fig:fig1}b, c. The optical layout consisted of 3 fNIRS channels over C3 and C4 with an interoptode distance (3.5 cm) that allowed sensitivity to brain activity. One short distance channel (1.5 cm),  not sensitive to brain activity (its sensitivity pattern did not reach the brain cortex), provided information regarding scalp-related hemodynamic oscillations to the classifiers \parencite{gagnon2014further}.  
+The raw Continuous Wave intensity ($I$)  was averaged  at a 1 sec pace .
+The Optical Densities (ODs)over time were computed as:
+
+\begin{equation}
+\label{eqn:erders}
+OD=-\ln\frac{I(t)}{I(t_{0})}
+\end{equation} 
+
+where $I(t)$ is the signal intensity at second t and $I(t_{0})$ is the average signal intensity in the first second of recording.
+Variations in the concentration of oxy-hemoglobin and deoxy-hemoglobin were derived for each channel  based on the Modified Lambert Beer Law \parencite{sassaroli2004comment}:
+
+\begin{equation}
+\begin{bmatrix}
+O_2Hb\\
+HHb
+\end{bmatrix}
+=
+\frac{1}{\rho}\begin{bmatrix}
+\epsilon_{O_2Hb}(\lambda_1)\cdot DPF(\lambda_1)&\epsilon_{HHb}(\lambda_1)\cdot DPF(\lambda_1)\\
+\epsilon_{O_2Hb}(\lambda_2)\cdot DPF(\lambda_2)&\epsilon_{HHb}(\lambda_2)\cdot DPF(\lambda_2)
+\end{bmatrix}^{-1}\times
+\begin{bmatrix}
+OD(\lambda_1)&\\
+OD(\lambda_2)
+\end{bmatrix}
+\end{equation}
+
+where $O_{2}Hb$ and $HHb$ represent the changes in oxy-hemoglobin and deoxy-hemoglobin concentrations, $\rho$ is the interoptode distance, $\epsilon$  and DPF are, respectively, the extinction coefficients for the two chromophores and the Differential Pathlength Factors at the wavelengths of interest ($\lambda _{1}$ and $\lambda _{2}$). The extinction coefficients of the two forms of hemoglobin at the different wavelengths  were extracted from \parencite{zijlstra1991absorption} ( $\epsilon_{O_{2}Hb}(690nm)$ = 0.0096 $mm^{-1}$, $\epsilon_{O_{2}Hb}(830nm)$ = 0.021 $mm^{-1}$, $\epsilon_{HHb}(690nm)$ = 0.05 $mm^{-1}$, $\epsilon_{HHb}(830nm)$ = 0.017 $mm^{-1}$).  The DPFs were derived fron Scholkmann and Wolf  ( $DPF(690nm)$ = 6.5, $DPF(830nm)$ = 5.5) \parencite{scholkmann2013general}.
+Oxy-hemoglobin and deoxy-hemoglobin changes ($\Delta O_{2}Hb$, $\Delta HHb$, respectively) during the motor imagery were obtained  with respect to rest (8 channels and 2 Hemoglobin forms for a total of 16 features per second):
+
+ \begin{equation}
+\begin{bmatrix}
+\Delta O_2Hb\\
+\Delta HHb
+\end{bmatrix}
+=
+\begin{bmatrix}
+O_2Hb_{MI}-O_2Hb_{Bas}\\
+HHb_{MI}-HHb_{Bas}
+\end{bmatrix}
+\end{equation}
+
+where $O_{2}Hb_{MI}$ and $HHb_{MI}$ are the average hemoglobin concentrations over 1 second window during the task and $O_{2}Hb_{Bas}$ and $HHb_{Bas}$ are the average hemoglobin concentrations in a 1 second window prior to the task onset.
+Hemoglobin change  in both short and long distance channels for each second during the task were fed to the learning algorithms for classification. 
+
+\begin{figure}
+	\includegraphics[width=\linewidth]{Slide3.JPG}
+	\caption{DNN Network employed for motor imagery classification. The network was a full connected feed-forward  DNN . Input neurons were 123 (when standalone EEG classification was performed), or 139 (when both EEG and fNIRS were employed). 
+	The feature of the input neurons were 1 second average ERD/ERS, $\Delta O_{2}Hb$ and $\Delta HHb$, expressed in microMolar ($\mu M$) change. 
+	 As a non-linear processing function of the neurons' hidden layers the Rectified Linear Unit (ReLU) function was employed. 
+	 The number of hidden layers (4) and neurons were selected to approximately decrease the number of processing unit ( thus compressing information) by a factor of 2 between successive layers. The output layer was composed of two neurons performing a softmax transformation. The softmax function outputs for the two neurons  the predicted probability of being in the right ($P_{Right}$) or left ($P_{Left}$) imagery state. }
+	\label{fig:fig3}
+\end{figure}
+
+\subsection{Deep Neural Network and Classification}
+DNNs allow computational models that are composed of multiple  processing layers of non-linear units, called neurons, able to learn representations of data with multiple levels of abstraction.
+DNNs find complex structure in  data-sets by using the backpropagation algorithm \parencite{hecht1988theory} that guides changes in Networks' parameters that are sequentially updated in each layer from the representation in the previous layer.
+Whereas Network parameters are learned from the data, the DNN structure have to be heuristically selected a priori or determined through computationally demanding hyper-parameters optimization algorithms %\parencite{mackay1996hyperparameters} \parencite{snoek2012practical} \parencite{bengio2000gradient}.
+\parencite{mackay1996hyperparameters,snoek2012practical,bengio2000gradient}
+
+Since  a first investigatory comparison between DNN performance and other classifier performances was carried out, we decided to fix the DNN structure without investigating multiple DNN architectures.
+The network employed was a full connected feed-forward DNN and its structure is reported in figure \ref{fig:fig3}.
+The data set consisted of 123 (when standalone EEG classification was performed), or 139 (when both EEG and fNIRS were employed) input neurons. 
+The features of the input neurons were 1 second average ERD/ERS (expressed as relative change), $\Delta O_{2}Hb$ and $\Delta HHb$ [expressed as microMolar ($\mu M$) change]. Notice that the average value of the features were of the order of 1 and all features' values were within one order of magnitude. In fact, the input values order of magnitude is an important aspect to take into account when training DNNs.
+Each neuron of the hidden layers performed a non-linear transformation of a linear combination of all the output from the previous layer. As a non-linear processing function we decided to employ the Rectified Linear Unit (ReLU) function, which was proven to dampen the vanishing gradient problem providing better performance than other non-linear functions (such as the hyperbolic tangent or the sigmoid function) \parencite{dahl2013improving}. Hidden neurons output,  when ReLU function is employed, can be written as:
+
+\begin{equation}
+y=
+\begin{cases}
+0,& \text{if } wx+b \leq 0\\
+wx+b,&\text{if } wx+b > 0
+\end{cases}
+\end{equation}
+
+where $x$ is the input vector, $w$ and $b$ are the weight vector and bias, respectively, and $y$ is the output vector.
+Since the classifier had to discriminate between two states, namely Left or Right Motor Imagery state, the output layer was composed of two neurons performing a softmax transformation:
+
+\begin{equation}
+\begin{bmatrix}
+P_{Right}\\
+P_{Left}
+\end{bmatrix}
+=
+\begin{bmatrix}
+\frac{e^{w_1x}}{\sum\limits_{k=1}^2 e^{w_kx}}\\
+\frac{e^{w_2x}}{\sum\limits_{k=1}^2 e^{w_kx}}
+\end{bmatrix}
+.
+\end{equation}
+
+The softmax function outputs for the two neurons the predicted probability of being in the right ($P_{Right}$) or left ($P_{Left}$) imagery state. 
+$x$ is the input vector of the softmax layer and $W_{1}$ and $W_{2}$ are the weight vectors of the neurons.
+The number of hidden layers (4) and neurons (refer to figure \ref{fig:fig3}) were selected to approximately decrease the number of processing unit (thus compressing information) by a factor of 2 between successive layers. 
+The weights were initialized in a pseudo-random approach employing a truncated normal distribution (0 mean, 0.1 SD, 2 SD truncation), whereas the biases were initialized to 0 \parencite{sutskever2013importance}.
+
+The DNN was trained in a supervised learning approach \parencite{hastie2009overview}.
+In the supervised learning, DNN parameters, i.e. weights $w$s and biases $b$s, are adjusted relying on an objective function minimization procedure. The objective function measures the error (or distance) between the output scores and the desired scores . We employed the cross-entropy error as objective function.
+Cross-entropy (CE) is defined as:
+
+\begin{equation}
+CE=
+-\sum\limits_i y'_{i}\ln y_{i}
+\end{equation}
+
+where $y$ is the output vector of the DNN ([$P_{Right}$  $P_{Left}$] in the study) and $y'$ is the known state ([1 0] for Right Hand Imagery or [0 1] for Left Hand Imagery).
+ Cross-entropy metric takes into account the closeness of a prediction and is a more granular way to compute error than Classification Error or Mean Squared Error \parencite{murphy2012machine}.
+ 
+ The choice of optimization algorithm for deep learning model is extremely important.
+ In general, learning algorithms are procedures that optimize network's weights and biases by exploring the parameters' space relying  on the local  slope (gradient) of the objective function.  
+ As optimization algorithm we employed the Adam Optimizer \parencite{kingma2014adam}.
+Adam Optimizer is a state-of the art learning algorithm that is different from classical stochastic gradient descent since it computes individual adaptive learning rates from estimates of the first and second moments of the gradients, dampening slow learning rate and/or local minima issues.
+Adam Optimizer parameters were set to: learning rate=$10^{-4}$, first moment exponential decay rate=$9\cdot 10^{-1}$,  second moment exponential decay rate=$9.99\cdot 10^{-1}$, constant=$10^{-8}$ \parencite{kingma2014adam}.
+The optimization procedure was iterated for 1000 epochs.
+In order to address the DNN performance, we decided to perform a 10-fold cross validation procedure \parencite{kohavi1995study} employing all the 200 trials of Right or Left motor imagery for each subject with a batch size of 100 which meant a training set of 180 and a testing set of 20 for each iteration. 
+The training and testing set for each validation were selected from different imagery tasks.
+The cross-validation procedure was performed 1000 times. 
+This analysis provided an estimate of the performance achieved by the DNN after a training of $\sim$9 minutes employing the chosen task design. 
+The accuracy of the DNN was evaluated by counting the number of correct DNN predictions after an argmax evaluation of probabilities of the DNN output vector.
+The described DNN architecture, training and validation were implemented in Python  through the open-source software library Tensorflow \parencite{abadi2016tensorflow}.
+
+DNN performances were compared to LDA and linear SVM.
+LDA is a classical closed-solution linear classifier that rely on classes means and covarancies \parencite{balakrishnama1998linear}.
+SVM is a supervised learning algorithm that can be employed for binary linear classification. SVM model is a representation of  points in the feature space, mapped so that the points of different classes are divided by a gap that is as wide as possible \parencite{cortes1995support}.
+LDA and SVM performances were estimated employing  a 10-fold cross validation procedure. In accordance with the DNN analysis,  the cross-validation procedure was performed 1000 times. 
+LDA ans SVM analysis were performed in Matlab.
+
+\subsection{Statistical Analysis}
+
+The statistical analysis was threefold:
+\begin{itemize}
+\item It compared multimodal EEG-fNIRS with standalone EEG  BCI performances (it estimated the Recording Effect);
+\item It compared DNN with other classification  algorithms (LDA and SVM, it estimated the Classifier Effect).
+\item It investigated possible interactions or cumulative effects between the Recording and the Classifer Effects.
+Results from the 6 subjects (classification accuracy) were computed for all possible combination of recordings and classifers. 
+Since standalone EEG recordings coupled with LDA classifier can be considered the simplest BCI configuration, the analysis that investigated main effects and interactions of recording modality and classifier were performed on differential accuracies with respect to EEG-LDA.
+This differential analysis was conducted to dampen the problem of the intrinsic variability of  the classification outcome among subjects, highlighting changes in accuracy caused by  Recording and the Classifier modalities.
+A two-way ANOVA was performed to investigate possible main effects and interactions of Recording  (factor one, EEG vs. EEG-fNIRS with respect to EEG-LDA), and  Classifier (factor two, SVM vs. DNN with respect to EEG-LDA) at a subjects' group level.
+Moreover, post-hoc analysis were conducted to provide average differences and their statistical significance among different conditions.
+Statistical analysis was performed in Matlab.
+\end{itemize} 
+
+\begin{figure}
+	\includegraphics[width=\linewidth]{Slide4.JPG}
+	\caption{a) Examples of average EEG Right and Left Motor Imagery responses for a representative subject across all the tasks.
+	The motor cortex controlateral ERD activation (lower $\beta$ power with respect to baseline) is appreciable. b) Average timecourse and related standard errors of the ERD/ERS relative change from 5 seconds prior to 5 seconds post right motor imagery task for the same subject in a highly activated electrode located over the left sensorimotor cortex. c)  Average timecourses and related standard errors of $O_{2}Hb$ and $HHb$ change from 5 seconds prior to 5 seconds post right motor imagery task for the same subject in an activated left located channel for the same subject.}
+	\label{fig:fig4}
+\end{figure}
+
+\begin{figure}
+	\includegraphics[width=\linewidth]{Slide5.JPG}
+	\caption{Average accuracy and related standard errors
+		of the DNN employed as a function of training epoch when standalone EEG or combined EEG-fNIRS recordings were analyzed. The average accuracy and variability were computed among cross-validations. 
+		The figure also reports related cross-entropies estimates, along with 
+		cross-validated LDA and SVM average accuracies.}
+	\label{fig:fig5}
+\end{figure}
+
+\begin{figure}
+	\includegraphics[width=\linewidth]{Slide6.JPG}
+	\caption{Average and related standard errors of cross-validated accuracies of all combination of recording procedure and classifier technology for each of the six subjects.}
+	\label{fig:fig6}
+\end{figure}
+
+\section{Results}
+Figure \ref{fig:fig4}a shows examples of average Right and Left Motor Imagery responses for a representative subject across all the tasks.
+A typical controlateral ERD activation (lower $\beta$ power with respect to baseline) on the motor cortices is appreciable.
+A typical controlateral ERD activation (lower $\beta$ power with respect to baseline) on the motor cortices is appreciable.
+In fact, although the left hand Motor Imagery  map shows also an ipsilater motor cortex activation, which was present in many subjects, the image still shows an higher activation in the contralateral cortex.
+Figure \ref{fig:fig4}b shows the average timecourse and related standard errors of the ERD/ERS relative change from 5 seconds prior to 5 seconds post to the right motor imagery task for the same subject in the C3 electrode. Figure \ref{fig:fig4}c shows the average timecourses and related standard errors of oxy- and deoxy-hemoglobin changes considering the same time frame in the optical channel over C3 during Right hand MI. A typical Blood-Oxygen-Level Dependent (BOLD) effect can be identified in response to the motor imagery. 
+Figure \ref{fig:fig5} shows average accuracy performances and related standard errors
+of the DNN employed on the testing set as a function of training epoch when standalone EEG or combined EEG-fNIRS recordings were analyzed. The average accuracy and variability were computed among cross-validations. 
+Figure \ref{fig:fig5} also reports related cross-entropies estimates where an earlier over-fitting as a function of epoch for EEG with respect to EEG+fNIRS is visible.
+Moreover, LDA and SVM average cross-validated performances are reported on the top-right corner of the figure.
+For the reported subject, which was the one providing the overall highest classification performance, a clear increase in accuracy can be appreciated when fNIRS is employed with EEG ($95.40\%$ with respect to standalone EEG, $81.50\%$), independently of the classifier, and a clear different performance of classification accuracy as a function of classifier (LDA,SVM, DNN in increasing classification accuracy order), independently of the recording procedure.
+Figure \ref{fig:fig6} reports the average and related standard errors, cross-validated accuracies of all combination of recording procedure and classifier technology for all of the six subjects. A similar pattern as the one reported for the representative subject in figure \ref{fig:fig5} is clear for all of the subjects examined. However, a variance in the average classification performance among subjects is appreciable with a best intra-subject performance ranging from $78.50\%$ to $95.40\%$. 
+Thus, in order to highlight specific effects of recording and classifier the two way ANOVA described in the Statistical Analysis section was performed on accuracies increases with respect to EEG-LDA. Before the ANOVA, although accuracy is a bounded metric, a Shapiro-Wilk normality test proved the approximatively gaussian-like distributions of the accuracy changes within each conditions (all p's$>$0.05).
+The two-way ANOVA highlighted a strong effect of Recording (F(1,20)=42.22, p$<$0.05) and a significant effect of Classifier (F(1,20)=5.27, p$<$0.05). No interaction between Recording and Classifier was found (F(1,20)=0.11, p$>$0.05). The ANOVA results suggest a main effects of both Classifier procedure and recording on the accuracy of the BCI with a possible cumulative effect without interaction.
+Post-hoc analysis tested pairwise differences  of conditions and it provided statistical significance for practically  all possible combinations (p's$<$0.05).
+We obtained an average increase of EEG-SVM with respect to EEG-LDA of $5.35\%$ (SD=$1.56\%$), an increase of EEG+fNIRS-SVM of $15.47\%$ (SD=$4.58\%$), an increase of EEG-DNN of $9.24\%$ (SD=$2.59\%$) and an increase of EEG+fNIRS-DNN of $18.39\%$ (SD=$4.75\%$). Notably the increase in accuracy from EEG to EEG+fNIRS, without considering Classifier, was of $9.63\%$, whereas the increase in accuracy from SVM to DNN, without considering recordings, was of  $3.40\%$. This results, combined with an overall increase of EEG+fNIRS-DNN vs EEG-SVM of  $13.04\%$ highlighted the cumulative effect of multimodal recordings and DNN classification procedure.
+
+\section{Discussion}
+ Brain activity recordings, feature extraction and state classification are required steps that allow to interface the human brain with a device \parencite{wolpaw2000brain}. 
+ 
+	 Within the neural activity recording modalities, multimodal monitoring is receiving increased interest. In fact, because of the multiple physiological information that brain activity can provide, several techniques have been developed over the years to study brain signals coming from different neurophysiological mechanisms \parencite{pfurtscheller2010hybrid,fazli2012enhanced,khan2014decoding,hong2015classification,croce2016eeg}. However, due to the absence of a specific technology that can record the whole spectrum of the information generated by these signals, simultaneous multimodal monitoring of brain state has become particularly useful. Among multimodal monitoring, the integration  of EEG and  fNIRS showed good potentialities. EEG and fNIRS are particularly suited for BCI since they are both flexible, scalp located recording procedures that can records  electrical  (EEG) and hemodynamic (fNIRS) brain activity \parencite{chiarelli2017simultaneous} . 
+ 
+ With respect to classification procedure, general current approaches to pattern recognition-classification  make essential use of advanced machine learning methods such as the one employed in the DNNs \parencite{lecun2015deep}. 
+In this paper we performed a first exploratory study that investigated the BCI capabilities of combining multi modal EEG-fNIRS data  with advanced Deep Learning Classifiers (DNNs). 
+
+ A supervised Left and Right Hand Motor Imagery task (figure \ref{fig:fig1}) was performed and Left vs Right classification accuracy improvements of EEG-fNIRS recordings and DNN Classifier were estimated and compared to standalone EEG and other classifiers (LDA, SVM).
+
+We found that baseline classification accuracy was dependent on the subject examined. However, as expected, when estimating differential accuracy increases  with respect to standalone EEG recordings and LDA classifier,we obtained a clear improvement in classification performance when fNIRS recordings were added to the EEG (average accuracy increase among subjects $9.63\%$), and DNN Classifier with respect to SVM Classifier was employed (average accuracy increase among subjects $3.40\%$).  No interaction between recording modalities and classifiers was found with cumulative effects (average accuracy increase among subjects $13.04\%$). Importantly, a similar pattern was recognizible for all of the 6 subjects that underwent the study. Best single-subject accuracy  improvement was $\sim25\%$ going from EEG-LDA to EEG+fNIRS-DNN. 
+
+With respect to classification accuracy improvement of motor imagery state due to  multimodal recordings it should be highlighted that the results could be slightly biased toward overestimation of efficacy of employing fNIRS together with EEG. In fact, since the possibility of head coverage was limited for fNIRS (the system employed could not cover the whole head), we  selected head regions that could potentially be highly sensitive to the hemodynamic response induced by the motor imagery. This selective investigation of the brain cortex was not applied for the EEG  where all the channels sensitive to brain activity (practically covering the whole cortex) were employed for classification. Clearly, this aspect can create some bias towards fNIRS recordings. Nonetheless, our results are comparable  with the one reported extensively in literature  \parencite{ma2012hybrid, lee2014hybrid, buccino2016hybrid, khan2014decoding, khan2017hybrid}. On the contrary,  the estimate of classification accuracy improvement obtained when the DNN classifier was employed should be unbiased or, at worst, biased towards underestimation of DNN performance. In fact, because of the investigatory nature of the study, hyperparameters of the DNN were heuristically chosen and their space was not explored in order to search for the best performing DNN structure.
+ 
+With respect to the DNN structure, some more consideration should be reported.
+The used  DNN  was a full connected feed-forward DNN employing state of the art neurons' transfer functions and trained with up to date learning algorithms and objective functions.  The DNN employed was not a CNN (encoding spatial or temporal information, \parencite{krizhevsky2012imagenet,kalchbrenner2014convolutional}) nor an RNN (encoding the sequential order of features \parencite{mikolov2010recurrent,hochreiter1997long}).
+We should report that we actually implemented CNN architectures. These architecture performed both spatial  (by applying 2D filters on images derived from the electrode and/or optode topographic layout) or temporal (by applying 1D filters on signal timecourses) filtering and pattern recognition. However, CNN architectures did not reach the performances of the full connected DNN. We think that the poor results obtained with the spatial CNN could be caused by the intrinsic low resolution of the EEG technology \parencite{pfurtscheller1997motor} (by knowing the spatial distribution of electrodes did not seems to provide increased information content to the NN), and by the limited number of optodes employed for the fNIRS. We think that, by relying on the higher spatial information content of the fNIRS, it could be interesting to investigate spatial CNN performances in a multimodal acquisition setting where a denser and bigger field of view optical array is employed. Regarding CNN employing temporal filters, we tried to feed to the CNN  1 second window raw data. However, the CNN performance were poorer when compared to the DNN fed with filtered (in the beta-band) signal feature. These results could be dependent on the limited number of training data for BCI, which is an intrinsic limiting factor when acquiring data of brain activity. In fact, this aspect can possibly limit the automatic selection of signal feature capabilities of the CNN, forcing some feature extraction prior to the classification machinery.
+
+Moreover, it should be  highlighted that RNN architectures were not tested on the data set. In fact we think that RNNs may be highly suited in a self paced motor imagery BCI, where the sequential temporal information may be fundamental for the imagery classification. Being the experiment guided, thus differential measurements with respect to baseline were provided to classifiers, RNN were not strictly suited for the experiment layout. 
+Finally, we should report that, in order to compare DNN with other highly performing classifiers, we implemented SVM in a non-linear classification fashion (employing a radial basis function kernel \parencite{park1991universal}). However, non-linear SVM provided poorer results with respect to linear SVM suggesting worst generalization of non-linear SVMs classifiers with respect to the DNN.
+
+
+
+
+\section{Conclusion}
+Results reported in this paper suggest potentially high BCI performances of combined multimodal EEG-fNIRS recording and deep learning classifiers with cumulative effects. The higher performances of the multimodal acquisition with respect to standalone EEG highlight the higher information content of combining both hemodynamic and electrical brain activity recordings. The higher performances of DNN with respect to linear SVM, suggests the non linearity involved in BCI classification and, when compared to the poor results obtained implementing non-linear SVM, the capabilities of state of the art DNN learning procedures to avoid poor generalization. The limiting factor of low spatial resolution of the EEG technology and the low number of data points obtainable in-vivo  did not allow an efficient feature extraction through CNN forcing some pre-processing prior to the DNN. Multimodal electrical and hemodynamic brain imaging, coupled  with some feature extraction procedures and DNN may represent a great improvement in BCI research.
+
+\section{Acknowledgements}
+This study was partially funded by grant: H2020, ECSEL-04-2015-Smart Health, Advancing Smart Optical Imaging and Sensing for Health (ASTONISH).
+ 
+
+\newpage
+\printbibliography
+\cleardoublepage
+\addcontentsline{toc}{section}{\refname}
+\end{document}

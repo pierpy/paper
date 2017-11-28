@@ -1,0 +1,41 @@
+[0] Config.pm:354> INFO - This is Biber 2.7
+[0] Config.pm:357> INFO - Logfile is 'main_txt_08242017.blg'
+[32] biber-MSWIN32:303> INFO - === 
+[62] Biber.pm:359> INFO - Reading 'main_txt_08242017.bcf'
+[163] Biber.pm:835> INFO - Found 70 citekeys in bib section 0
+[177] Biber.pm:3670> INFO - Processing section 0
+[201] Biber.pm:3840> INFO - Looking for bibtex format file 'b.bib' for section 0
+[210] bibtex.pm:1435> INFO - Decoding LaTeX character macros into UTF-8
+[224] bibtex.pm:1292> INFO - Found BibTeX data source 'b.bib'
+[227] Utils.pm:164> WARN - Duplicate entry key: 'hennrich2015investigating' in file 'b.bib', skipping ...
+[228] Utils.pm:164> WARN - Duplicate entry key: 'lee2014hybrid' in file 'b.bib', skipping ...
+[229] Utils.pm:164> WARN - Duplicate entry key: 'wolpaw2000brain' in file 'b.bib', skipping ...
+[229] Utils.pm:164> WARN - Duplicate entry key: 'lotte2007review' in file 'b.bib', skipping ...
+[229] Utils.pm:164> WARN - Duplicate entry key: 'hallez2007review' in file 'b.bib', skipping ...
+[229] Utils.pm:164> WARN - Duplicate entry key: 'fazli2012enhanced' in file 'b.bib', skipping ...
+[230] Utils.pm:164> WARN - Duplicate entry key: 'khan2014decoding' in file 'b.bib', skipping ...
+[230] Utils.pm:164> WARN - Duplicate entry key: 'villringer1997non' in file 'b.bib', skipping ...
+[231] Utils.pm:164> WARN - Duplicate entry key: 'naseer2015fnirs' in file 'b.bib', skipping ...
+[231] Utils.pm:164> WARN - Duplicate entry key: 'lecun2015deep' in file 'b.bib', skipping ...
+[232] Utils.pm:164> WARN - Duplicate entry key: 'krizhevsky2012imagenet' in file 'b.bib', skipping ...
+[286] Utils.pm:164> WARN - month field 'jan' in entry 'Fazli_2012' is not an integer - this will probably not sort properly.
+[355] Utils.pm:164> WARN - I didn't find a database entry for 'chiarelliREVdaaggiungere' (section 0)
+[356] Utils.pm:164> WARN - I didn't find a database entry for 'pfurtscheller2010hybriz' (section 0)
+[562] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[562] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[562] Biber.pm:3499> INFO - Sorting list 'nyt/global/' of type 'entry' with scheme 'nyt' and locale 'en-US'
+[562] Biber.pm:3505> INFO - No sort tailoring available for locale 'en-US'
+[640] bbl.pm:608> INFO - Writing 'main_txt_08242017.bbl' with encoding 'ascii'
+[643] Utils.pm:164> WARN - The entry 'abadi2016tensorflow' has characters which cannot be encoded in 'ascii'. Recoding problematic characters into macros.
+[647] Utils.pm:164> WARN - The entry 'ciresan2012deep' has characters which cannot be encoded in 'ascii'. Recoding problematic characters into macros.
+[650] Utils.pm:164> WARN - The entry 'Fazli_2012' has characters which cannot be encoded in 'ascii'. Recoding problematic characters into macros.
+[652] Utils.pm:164> WARN - The entry 'fazli2012enhanced' has characters which cannot be encoded in 'ascii'. Recoding problematic characters into macros.
+[653] Utils.pm:164> WARN - The entry 'gagnon2014further' has characters which cannot be encoded in 'ascii'. Recoding problematic characters into macros.
+[655] Utils.pm:164> WARN - The entry 'govindan2016novel' has characters which cannot be encoded in 'ascii'. Recoding problematic characters into macros.
+[658] Utils.pm:164> WARN - The entry 'hochreiter1997long' has characters which cannot be encoded in 'ascii'. Recoding problematic characters into macros.
+[662] Utils.pm:164> WARN - The entry 'lotte2007review' has characters which cannot be encoded in 'ascii'. Recoding problematic characters into macros.
+[664] Utils.pm:164> WARN - The entry 'mikolov2010recurrent' has characters which cannot be encoded in 'ascii'. Recoding problematic characters into macros.
+[666] Utils.pm:164> WARN - The entry 'nguyen2013temporal' has characters which cannot be encoded in 'ascii'. Recoding problematic characters into macros.
+[670] Utils.pm:164> WARN - The entry 'schmidhuber2015deep' has characters which cannot be encoded in 'ascii'. Recoding problematic characters into macros.
+[673] bbl.pm:712> INFO - Output to main_txt_08242017.bbl
+[674] Biber.pm:109> INFO - WARNINGS: 25

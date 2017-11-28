@@ -1,0 +1,40 @@
+[0] Config.pm:354> INFO - This is Biber 2.7
+[0] Config.pm:357> INFO - Logfile is 'main_txt_08222017.blg'
+[51] biber-MSWIN32:303> INFO - === 
+[199] Biber.pm:359> INFO - Reading 'main_txt_08222017.bcf'
+[298] Biber.pm:835> INFO - Found 68 citekeys in bib section 0
+[312] Biber.pm:3670> INFO - Processing section 0
+[403] Biber.pm:3840> INFO - Looking for bibtex format file 'b.bib' for section 0
+[411] bibtex.pm:1435> INFO - Decoding LaTeX character macros into UTF-8
+[433] bibtex.pm:1292> INFO - Found BibTeX data source 'b.bib'
+[436] Utils.pm:164> WARN - Duplicate entry key: 'hennrich2015investigating' in file 'b.bib', skipping ...
+[437] Utils.pm:164> WARN - Duplicate entry key: 'lee2014hybrid' in file 'b.bib', skipping ...
+[438] Utils.pm:164> WARN - Duplicate entry key: 'wolpaw2000brain' in file 'b.bib', skipping ...
+[438] Utils.pm:164> WARN - Duplicate entry key: 'lotte2007review' in file 'b.bib', skipping ...
+[438] Utils.pm:164> WARN - Duplicate entry key: 'hallez2007review' in file 'b.bib', skipping ...
+[439] Utils.pm:164> WARN - Duplicate entry key: 'fazli2012enhanced' in file 'b.bib', skipping ...
+[439] Utils.pm:164> WARN - Duplicate entry key: 'khan2014decoding' in file 'b.bib', skipping ...
+[439] Utils.pm:164> WARN - Duplicate entry key: 'villringer1997non' in file 'b.bib', skipping ...
+[440] Utils.pm:164> WARN - Duplicate entry key: 'naseer2015fnirs' in file 'b.bib', skipping ...
+[440] Utils.pm:164> WARN - Duplicate entry key: 'lecun2015deep' in file 'b.bib', skipping ...
+[441] Utils.pm:164> WARN - Duplicate entry key: 'krizhevsky2012imagenet' in file 'b.bib', skipping ...
+[496] Utils.pm:164> WARN - month field 'jan' in entry 'Fazli_2012' is not an integer - this will probably not sort properly.
+[562] Utils.pm:164> WARN - I didn't find a database entry for 'chiarelliREVdaaggiungere' (section 0)
+[767] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[767] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[767] Biber.pm:3499> INFO - Sorting list 'nyt/global/' of type 'entry' with scheme 'nyt' and locale 'en-US'
+[767] Biber.pm:3505> INFO - No sort tailoring available for locale 'en-US'
+[844] bbl.pm:608> INFO - Writing 'main_txt_08222017.bbl' with encoding 'ascii'
+[847] Utils.pm:164> WARN - The entry 'abadi2016tensorflow' has characters which cannot be encoded in 'ascii'. Recoding problematic characters into macros.
+[851] Utils.pm:164> WARN - The entry 'ciresan2012deep' has characters which cannot be encoded in 'ascii'. Recoding problematic characters into macros.
+[854] Utils.pm:164> WARN - The entry 'Fazli_2012' has characters which cannot be encoded in 'ascii'. Recoding problematic characters into macros.
+[856] Utils.pm:164> WARN - The entry 'fazli2012enhanced' has characters which cannot be encoded in 'ascii'. Recoding problematic characters into macros.
+[857] Utils.pm:164> WARN - The entry 'gagnon2014further' has characters which cannot be encoded in 'ascii'. Recoding problematic characters into macros.
+[859] Utils.pm:164> WARN - The entry 'govindan2016novel' has characters which cannot be encoded in 'ascii'. Recoding problematic characters into macros.
+[862] Utils.pm:164> WARN - The entry 'hochreiter1997long' has characters which cannot be encoded in 'ascii'. Recoding problematic characters into macros.
+[866] Utils.pm:164> WARN - The entry 'lotte2007review' has characters which cannot be encoded in 'ascii'. Recoding problematic characters into macros.
+[868] Utils.pm:164> WARN - The entry 'mikolov2010recurrent' has characters which cannot be encoded in 'ascii'. Recoding problematic characters into macros.
+[870] Utils.pm:164> WARN - The entry 'nguyen2013temporal' has characters which cannot be encoded in 'ascii'. Recoding problematic characters into macros.
+[873] Utils.pm:164> WARN - The entry 'schmidhuber2015deep' has characters which cannot be encoded in 'ascii'. Recoding problematic characters into macros.
+[877] bbl.pm:712> INFO - Output to main_txt_08222017.bbl
+[877] Biber.pm:109> INFO - WARNINGS: 24
